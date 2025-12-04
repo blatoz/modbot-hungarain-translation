@@ -5,17 +5,17 @@ import database from './database/Database.js';
 import commandManager from './commands/CommandManager.js';
 
 try {
-    await logger.debug('Loading settings');
+    await logger.debug('Beállítások betöltése');
     await config.load();
-    await logger.info('Connecting to database');
+    await logger.info('Adatbázishoz való csatlakozás');
     await database.connect();
-    await logger.info('Creating database tables');
+    await logger.info('Adatbázis táblák létrehozása');
     await database.createTables();
     await database.runMigrations();
-    await logger.notice('Registering slash commands');
+    await logger.notice('Slash parancsok globális regisztrálása');
     await commandManager.registerGlobalCommands();
 
-    await logger.info('Spawning shards');
+    await logger.info('Shardok indítása');
     const manager = new ShardingManager(
         import.meta.dirname + '/shard.js',
         {
@@ -25,21 +25,21 @@ try {
 
     manager.on('shardCreate', async shard => {
         shard.args = [shard.id, manager.totalShards];
-        await logger.notice(`Launched shard ${shard.id}`);
+        await logger.notice(`Shard ${shard.id} indítása`);
 
 
         shard.on('ready', () => {
-            logger.info(`Shard ${shard.id} connected to Discord's Gateway.`);
+            logger.info(`Shard ${shard.id} csatlakozott a Discord Gateway-hoz.`);
         });
     });
 
     const shards = await manager.spawn();
-    await logger.info(`Launched ${shards.size} shards`);
+    await logger.info(`Indított shardok száma: ${shards.size}`);
 } catch (error) {
     try {
-        await logger.critical('Shard Manager crashed', error);
+        await logger.critical('Shard Manager hibázott', error);
     } catch (e) {
-        console.error('Failed to send fatal error to monitoring', e);
+        console.error('Hibás indítási folyamat, monitorozási rendszernek nem sikerült küldeni a kritikus hibát', e);
     }
     process.exit(1);
 }

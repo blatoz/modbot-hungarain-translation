@@ -27,7 +27,7 @@ export async function retry(fn, thisArg, args = [], maxRetries = 5, returnValMat
             continue;
         }
         if (typeof returnValMatch === 'function' && !returnValMatch(res)) {
-            err = new Error('Returned value did not match requirements');
+            err = new Error('A visszatérési érték nem felelt meg a követelményeknek');
             continue;
         }
         return res;

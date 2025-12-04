@@ -43,7 +43,7 @@ export function formatNumber(number, name) {
     if (number === 1) {
         return `${number} ${name}`;
     }
-    return `${number} ${name}s`;
+    return `${number} ${name}k`;
 }
 
 /**

@@ -8,28 +8,28 @@ import commandManager from './commands/CommandManager.js';
 import IntervalManager from './interval/IntervalManager.js';
 
 try {
-    await logger.debug('Loading settings');
+    await logger.debug('Beállítások betöltése');
     await config.load();
-    await logger.info('Connecting to database');
+    await logger.info('Adatbázishoz való csatlakozás');
     await database.connect();
-    await logger.notice('Logging into discord');
+    await logger.notice('Bejelentkezés a Discordba');
     await bot.start();
     await logger.info('Online');
 
-    await logger.debug('Loading event listeners');
+    await logger.debug('Eseményfigyelők betöltése');
     new DiscordEventManager().subscribe();
     new RestEventManagerEventManager().subscribe();
-    await logger.debug('Loading intervals');
+    await logger.debug('Intervallumok beállítása');
     new IntervalManager().schedule();
-    await logger.notice('Updating guild commands');
+    await logger.notice('Guild parancsok frissítése');
     await commandManager.updateCommandIds();
     await commandManager.updateGuildCommands();
-    await logger.info('Started');
+    await logger.info('Indítás kész');
 } catch (error) {
     try {
-        await logger.critical('Shard crashed', error);
+        await logger.critical('Shard hibázott', error);
     } catch (e) {
-        console.error('Failed to send fatal error to monitoring', e);
+        console.error('Hibás indítási folyamat, monitorozási rendszernek nem sikerült küldeni a kritikus hibát', e);
     }
     process.exit(1);
 }
